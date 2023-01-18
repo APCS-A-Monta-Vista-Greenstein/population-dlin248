@@ -74,13 +74,13 @@ public class Population {
 			int population = Integer.parseInt(pop.trim());
 			cities.add(new City(city,state,cityType,population));
 		}
-		System.out.println(counter + " cities in database.");
+		System.out.println(counter + " cities in database.\n");
 		printMenu();
-		int selection = Prompt.getInt("Enter selection");
+		int selection = Prompt.getInt("\nEnter selection");
 		while(selection != 9)
 		{
 			while(selection < 1 || selection  > 6)
-				selection = Prompt.getInt("Enter selection");
+				selection = Prompt.getInt("\nEnter selection");
 			if(selection == 1)
 				ascendingPopulationOrder();
 			else if(selection == 2)
@@ -99,7 +99,7 @@ public class Population {
 					works = mostPopular(name);
 					if(!works)
 					{
-						System.out.println("\nERROR: " + name + " is not valid.");
+						System.out.println("ERROR: " + name + " is not valid.");
 					}
 				}while(!works);
 			}
@@ -108,44 +108,53 @@ public class Population {
 				String name = Prompt.getString("\nEnter city name");
 				matchingName(name);
 			}
-			System.out.println("\nElapsed time: " + time);
-			
+			System.out.println("\n\nElapsed time: " + time + " milliseconds\n");
 			printMenu();
 			selection = Prompt.getInt("Enter selection");
 		}
+		System.out.println("Thanks for using population!");
+		System.exit(0);
 	}
 	/**
 	 * Sorts the list cities in ascending order by population using selection sort*/
 	public void ascendingPopulationOrder()
 	{
 		long startMillisec = System.currentTimeMillis();
-		
+		sort.selectionSort(cities);
 		long endMillisec = System.currentTimeMillis();
 		time = endMillisec - startMillisec;
+		System.out.println("\n50 least populous cities");
+		printResults(cities);
 	}
 	/** Sorts the list cities in descending order by population using merge sort*/
 	public void descendingPopulationOrder()
 	{
 		long startMillisec = System.currentTimeMillis();
-		
+		 sort.mergeSortPopulation(cities);
 		long endMillisec = System.currentTimeMillis();
 		time = endMillisec - startMillisec;
+		System.out.println("\n50 most populous cities");
+		printResults(cities);
 	}
 	/** Sorts the list cities in ascending order based on their name using insertion sort*/
 	public void ascendingNameOrder()
 	{
 		long startMillisec = System.currentTimeMillis();
-		
+		sort.insertionSort(cities);
 		long endMillisec = System.currentTimeMillis();
 		time = endMillisec - startMillisec;
+		System.out.println("\n50 cities sorted by name");
+		printResults(cities);
 	}
 	/** Sorts the list cities in descending order based on their name using merge sort*/
 	public void descendingNameOrder()
 	{
 		long startMillisec = System.currentTimeMillis();
-		
+		sort.mergeSortName(cities);
 		long endMillisec = System.currentTimeMillis();
 		time = endMillisec - startMillisec;
+		System.out.println("\n50 cities sorted by name descending");
+		printResults(cities);
 	}
 	/**Sorts the most popular cities in a state using mergeSort
 	 * @param name 		The name of the state that you want sorted*/
@@ -160,9 +169,11 @@ public class Population {
 		if(citiesMatching.size() == 0)
 			return false;
 		long startMillisec = System.currentTimeMillis();
-		
+		sort.mergeSortPopulation(citiesMatching);
 		long endMillisec = System.currentTimeMillis();
 		time = endMillisec - startMillisec;
+		System.out.println("\n50 most populous cities in " + name);
+		printResults(citiesMatching);
 		return true;
 	}
 	/**Sorts all the cities matching a name based on population
@@ -174,25 +185,28 @@ public class Population {
 		{
 			if(cities.get(i).getCity().equals(name))
 				citiesMatching.add(cities.get(i));
-			if(cities.get(i).getCity().equals("Fremont"))
-			{System.out.println("cheese");}
 		}
 		long startMillisec = System.currentTimeMillis();
 		sort.mergeSortPopulation(citiesMatching);
 		long endMillisec = System.currentTimeMillis();
-		System.out.println("City " + name + " by population");
-		System.out.printf("%-25s%-25s%-25s%-25s","State", "City","Type","Population");
-		int counter = citiesMatching.size()-1;
-		int number = 1;
-		System.out.println("size" + citiesMatching.size());
-		while(citiesMatching.size() > 0)
+		System.out.println("\nCity " + name + " by population");
+		time = endMillisec - startMillisec;
+		printResults(citiesMatching);
+	}
+	/**
+	 * This method will print out the results of the sort up to 50
+	 * @param sorted		The sorted list 
+	 */
+	public void printResults(List<City>sorted)
+	{
+		System.out.printf("      %-25s%-25s%-25s%-25s","State", "City","Type","Population");
+		int counter = 0;
+		while(counter < 50 && counter < sorted.size())
 		{
-			City city = citiesMatching.get(counter);
-			System.out.printf("\n%4d:%-25s%-25s%-25s%-25d",number,city.getState()
+			City city = sorted.get(counter);
+			System.out.printf("\n%4d: %-25s%-25s%-25s%-25d",counter + 1,city.getState()
 				,city.getCity(),city.getCityType(),city.getPopulation());
 			counter++;
 		}
-
-		time = endMillisec - startMillisec;
 	}
 }

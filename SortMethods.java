@@ -3,9 +3,10 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- *	SortMethods - Sorts an array of Integers in ascending order.
+ *	SortMethods - Different ways to sort arrays and list that are much different
+ * 	in total computing time. 
  *
- *	@author Peter Chen
+ *	@author Darren Lin
  *	@since	12/5/2022
  */
 public class SortMethods {
@@ -14,7 +15,7 @@ public class SortMethods {
 	 *	Bubble Sort algorithm - in ascending order
 	 *	@param arr		array of Integer objects to sort
 	 */
-	public void bubbleSort(Integer [] arr) {
+	/**public void bubbleSort(Integer [] arr) {
 		for(int outer = arr.length - 1; outer > 0; outer--) {
 			for(int inner = 0; inner < outer; inner++) {
 				if(arr[inner].compareTo(arr[inner+1]) > 0) {
@@ -22,60 +23,65 @@ public class SortMethods {
 				}
 			}
 		}
-	}
+	}*/
 	
 	/**
 	 *	Swaps two Integer objects in array arr
-	 *	@param arr		array of Integer objects
+	 *	@param arr		List of City objects
 	 *	@param x		index of first object to swap
 	 *	@param y		index of second object to swap
 	 */
-	private void swap(Integer[] arr, int x, int y) {
-		Integer temp = arr[x];
-		arr[x] = arr[y];
-		arr[y] = temp;
+	private void swap(List<City>arr, int x, int y) {
+		City temp = arr.get(x);
+		arr.set(x,arr.get(y));
+		arr.set(y,temp);
 	}
 	
 	/**
 	 *	Selection Sort algorithm - in ascending order (you implement)
-	 *	@param arr		array of Integer objects to sort
+	 *	@param arr		List of city objects to sort
+	 * 	@return 		The sorted list
 	 */
-	public void selectionSort(Integer [] arr) {
+	public List<City> selectionSort(List<City>arr) 
+	{
 		int largestIndex = 0; 
-        for(int i = arr.length - 1; i > 0; i--) {
+        for(int i = arr.size() - 1; i > 0; i--) 
+        {
 			largestIndex = i;
-            for(int j = 0; j < i; j++) {
-                
-                if(arr[j] > arr[largestIndex]) {
+            for(int j = 0; j < i; j++) 
+            {	   
+                if(arr.get(j).getPopulation() > arr.get(largestIndex).getPopulation())
+                {
 					largestIndex = j;
 				}
 			}
 			swap(arr, largestIndex, i);
         }
+        return arr;
 	}
 	
 	/**
 	 *	Insertion Sort algorithm - in ascending order (you implement)
 	 *	@param arr		array of Integer objects to sort
 	 */
-	public void insertionSort(Integer [] arr) {
-		ArrayList<Integer> sorted = new ArrayList<Integer>(Arrays.asList(arr));
-	
-		for (int i = 0; i < sorted.size(); i++)
+	public void insertionSort(List<City>arr) {
+		for (int i = 0; i < arr.size(); i++)
 		{
-			for (int insertLocation = 0; insertLocation < i; insertLocation++) {
-				if (sorted.get(i) < sorted.get(insertLocation)) {
-					int temp = sorted.remove(i);
-					sorted.add(insertLocation, temp);
+			for (int insertLocation = 0; insertLocation < i; insertLocation++) 
+			{
+				if (arr.get(i).getCity().compareTo(arr.get(insertLocation).getCity()) < 0)
+				{
+					City temp = arr.remove(i);
+					arr.add(insertLocation, temp);
 				}
 			}
 		}
-		arr = sorted.toArray(arr);
 	}
 	/**
 	 *	Merge Sort algorithm - in ascending order (you implement)
 	 *	@param arr		array of Integer objects to sort
 	 */
+	/**
 	public void mergeSort(Integer [] arr)
 	{
 
@@ -95,7 +101,7 @@ public class SortMethods {
 			mergeSort(right);
 			int i1 = 0;
 			int i2 = 0;
-			for (int i = 0; i < arr.length; i++) 
+			/**for (int i = 0; i < arr.length; i++) 
 			{
 				if (i2 >= right.length || (i1 < left.length && left[i1] <= right[i2])) 
 				{
@@ -108,10 +114,23 @@ public class SortMethods {
 					i2++;
 				}
 			}
+			for(int i = 0; i < arr.length;i++)
+			{
+				if(i2 >= right.length || left[i1] < right[i2])
+				{
+					arr[i] = left[i1];
+					i1++;
+				}
+				else
+				{
+					arr[i] = right[i2];
+					i2++;
+				}
+			}
 		}
-	}
+	}*/
 	/**
-	 *	Modified Merge Sort algorithm - in ascending order (you implement)
+	 *	Modified Merge Sort algorithm - in descending order (you implement)
 	 * 	to handle List<City>
 	 * 	Handles population 
 	 *	@param arr		list of city objects to sort.
@@ -127,7 +146,7 @@ public class SortMethods {
 			{
 				left.add(arr.get(i));
 			}
-			for (int i = 0; i < arr.size()-arr.size(); i++) 
+			for (int i = 0; i < arr.size()-left.size(); i++) 
 			{
 				right.add(i,arr.get(i + left.size()));
 			}
@@ -137,23 +156,47 @@ public class SortMethods {
 			int i2 = 0;
 			int length = arr.size();
 			arr.clear();
-			for (int i = 0; i < length; i++) 
+			while(i1 < left.size() || i2 < right.size())
 			{
-				if (i2 > right.size() || (i1 < left.size() && left.get(i1).getPopulation()<(right.get(i2).getPopulation()))) 
+				if(i2 >= right.size())
+				{
+					if(i1 < left.size())
+					{
+						arr.add(left.get(i1));
+						i1++;
+					}
+				}
+				else if(i1 >= left.size())
+				{
+					arr.add(right.get(i2));
+					i2++;
+				}
+				else if(left.get(i1).getPopulation() > right.get(i2).getPopulation())
 				{
 					arr.add(left.get(i1));
 					i1++;
-				} 
-				else 
+				}
+				else
 				{
-					arr.add(i,right.get(i2));
+					arr.add(right.get(i2));
 					i2++;
 				}
+				
 			}
 		}
+		else if( arr.size() == 2 )
+		{
+			if(arr.get(0).getPopulation() > arr.get(1).getPopulation())
+			{
+				swap(arr,0,1);
+			}
+			return;
+		}
+		else
+			return;	 
 	}
 	/**
-	 *	Modified Merge Sort algorithm - in ascending order (you implement)
+	 *	Modified Merge Sort algorithm - in descending order (you implement)
 	 * 	to handle List<City>
 	 * 	Handles name
 	 *	@param arr		List of city objects to sort.
@@ -167,31 +210,58 @@ public class SortMethods {
 			List<City> right = new ArrayList<City>();
 			for (int i = 0; i < arr.size()/2; i++) 
 			{
-				left.set(i,arr.get(i));
+				left.add(arr.get(i));
 			}
 			for (int i = 0; i < arr.size()-left.size(); i++) 
 			{
-				right.set(i,arr.get(i + left.size()));
+				right.add(i,arr.get(i + left.size()));
 			}
 			mergeSortName(left);
 			mergeSortName(right);
 			int i1 = 0;
 			int i2 = 0;
-			for (int i = 0; i < arr.size(); i++) 
+			int length = arr.size();
+			arr.clear();
+			while(i1 < left.size() || i2 < right.size())
 			{
-				if (i2 >= right.size() || (i1 < left.size() && left.get(i1).getCity().compareTo(right.get(i2).getCity()) <= 0)) 
+				if(i2 >= right.size())
 				{
-						arr.set(i,left.get(i1));
+					if(i1 < left.size())
+					{
+						arr.add(left.get(i1));
 						i1++;
-				} 
-				else 
+					}
+				}
+				else if(i1 >= left.size())
 				{
-					arr.set(i,right.get(i2));
+					arr.add(right.get(i2));
 					i2++;
 				}
+				else if(left.get(i1).getCity().compareTo(right.get(i2).getCity()) > 0)
+				{
+					arr.add(left.get(i1));
+					i1++;
+				}
+				else
+				{
+					arr.add(right.get(i2));
+					i2++;
+				}
+				
 			}
 		}
+		else if( arr.size() == 2 )
+		{
+			if(arr.get(0).getCity().compareTo(arr.get(1).getCity()) > 0)
+			{
+				swap(arr,0,1);
+			}
+			return;
+		}
+		else
+			return;	 
 	}
+}
 	/*
 	public void recursiveMergeSort(Integer [] arr, int from, int to) {
 		int length = to - from;
@@ -218,79 +288,4 @@ public class SortMethods {
 
 	}*/
 	
-	/*****************************************************************/
-	/************************* For Testing ***************************/
-	/*****************************************************************/
-	
-	/**
-	 *	Print an array of Integers to the screen
-	 *	@param arr		the array of Integers
-	 */
-	public void printArray(Integer[] arr) {
-		if (arr.length == 0) System.out.print("(");
-		else System.out.printf("( %4d", arr[0]);
-		for (int a = 1; a < arr.length; a++) {
-			if (a % 10 == 0) System.out.printf(",\n  %4d", arr[a]);
-			else System.out.printf(", %4d", arr[a]);
-		}
-		System.out.println(" )");
-	}
 
-	public static void main(String[] args) {
-		SortMethods se = new SortMethods();
-		se.run();
-	}
-	
-	public void run() {
-		Integer[] arr = new Integer[50];
-		// Fill arr with random numbers
-		/** 
-		for (int a = 0; a < 10; a++)
-			arr[a] = (int)(Math.random() * 100) + 1;
-		System.out.println("\nBubble Sort");
-		System.out.println("Array before sort:");
-		printArray(arr);
-		System.out.println();
-		bubbleSort(arr);
-		System.out.println("Array after sort:");
-		printArray(arr);
-		System.out.println();
-		*/
-	/*
-		for (int a = 0; a < 50; a++)
-			arr[a] = (int)(Math.random() * 100) + 1;
-		System.out.println("\nSelection Sort");
-		System.out.println("Array before sort:");
-		printArray(arr);
-		System.out.println();
-		selectionSort(arr);
-		System.out.println("Array after sort:");
-		printArray(arr);
-		System.out.println();
-*/
-		
-		for (int a = 0; a < 50; a++)
-			arr[a] = (int)(Math.random() * 100) + 1;
-		System.out.println("\nInsertion Sort");
-		System.out.println("Array before sort:");
-		printArray(arr);
-		System.out.println();
-		insertionSort(arr);
-		System.out.println("Array after sort:");
-		printArray(arr);
-		System.out.println();
-
-		
-		for (int a = 0; a < 10; a++)
-			arr[a] = (int)(Math.random() * 100) + 1;
-		System.out.println("\nMerge Sort");
-		System.out.println("Array before sort:");
-		printArray(arr);
-		System.out.println();
-		mergeSort(arr);
-		System.out.println("Array after sort:");
-		printArray(arr);
-		System.out.println();
-
-	}
-}
